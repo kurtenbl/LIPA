@@ -1,0 +1,43 @@
+import os
+import glob
+
+# Ordner mit den Satelliten-TIFFs
+tiff_folder = "C:/Users/linus/Documents/GIS"
+
+# Erstelle eine Liste der Dateipfade
+tiff_files = sorted(glob.glob(os.path.join(tiff_folder, "*.tif")))
+
+if not tiff_files:
+    print("Keine TIF-Dateien im Ordner gefunden.")
+    
+
+# Extrahiere die Nummern aus den Dateinamen und sortiere entsprechend
+sequences = []
+for tiff_file in tiff_files:
+    filename = os.path.splitext(os.path.basename(tiff_file))[0]
+    try:
+        # Extrahiere die Sequenznummer aus dem Dateinamen (nach dem letzten Unterstrich)
+        sequence_number = int(filename.split("_")[-1])
+        sequences.append((sequence_number, tiff_file))
+    except ValueError:
+        print(f"Ungültiges Dateiformat: {tiff_file}")
+        continue
+
+# Sortiere die Liste nach Sequenznummern
+sequences.sort()
+
+# Überprüfe, ob genügend Dateien vorhanden sind
+if len(sequences) < 2:
+    print("Nicht genügend Bilder für eine Zeitreihe.")
+
+
+# Berechne das Zeitintervall als durchschnittlichen Abstand (hier angenommen: gleiche Abstände)
+frame_duration = 1  # 1 Sekunde pro Bild im Video (anpassbar)
+
+# Erstelle das Video mit FFmpeg
+result = os.system(f"ffmpeg -framerate {1/frame_duration} -i '{tiff_folder}/venezuela_satellite_%d.tif' -c:v libx264 -pix_fmt yuv420p -vf 'fps=1' zeitreihe.mp4")
+if result != 0:
+    print("Fehler bei der Videoerstellung. Überprüfen Sie die FFmpeg-Installation und den Dateipfad.")
+
+
+print("Video-Erstellung abgeschlossen!")
