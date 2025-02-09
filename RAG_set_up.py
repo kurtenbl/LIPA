@@ -59,5 +59,4 @@ def query_rag(query_text: str, top_k: int = 5):
     formatted_response = f"Response: {response_text}\n\nSources: {sources}"
     print(formatted_response)
     return response_text
-
-query_rag("Las empresas bloquean el flujo del agua en un sistema interconectado donde el agua del rio llega a descansar. Hay alguna evidencia de permiso para estos bloqueos?")
+#query_rag("Las empresas bloquean el flujo del agua en un sistema interconectado donde el agua del rio llega a descansar. Hay alguna evidencia de permiso para estos bloqueos?")
